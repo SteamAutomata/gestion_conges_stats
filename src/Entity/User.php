@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -25,6 +27,15 @@ class User
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
+
+    #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'users')]
+    #[ORM\JoinTable(name: 'utilisateur_groupe')]
+    private Collection $groupes;
+
+    public function __construct()
+    {
+        $this->groupes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -76,6 +87,33 @@ class User
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Groupe>
+     */
+    public function getGroupes(): Collection
+    {
+        return $this->groupes;
+    }
+
+    public function addGroupe(Groupe $groupe): static
+    {
+        if (!$this->groupes->contains($groupe)) {
+            $this->groupes->add($groupe);
+            $groupe->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupe(Groupe $groupe): static
+    {
+        if ($this->groupes->removeElement($groupe)) {
+            $groupe->removeUser($this);
+        }
 
         return $this;
     }
