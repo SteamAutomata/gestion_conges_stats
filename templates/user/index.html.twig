@@ -1,17 +1,37 @@
-{# templates/user/index.html.twig #}
-{% extends 'base.html.twig' %}
+{# templates/user/index.html.twig #} {% extends 'base.html.twig' %} {% block
+title %}Afficher les utilisateurs{% endblock %} {% block body %}
+<h1>Utilisateurs</h1>
 
-{% block title %}Afficher les utilisateurs{% endblock %}
+<h2>Ajouter un utilisateur</h2>
+<form method="post" action="/user/add">
+  <label for="last-name">Nom</label>
+  <label for="first-name">Prénom:</label><br />
 
-{% block body %}
-<h1>Liste des utilisateurs</h1>
+  <input type="text" name="last-name" required />
+  <input type="text" name="first-name" required /><br />
 
+  <label for="email">Email:</label><br />
+  <input type="email" name="email" required /><br />
+  <label for="password">Mot de passe:</label><br />
+  <input type="password" name="password" required /><br />
+
+  <input type="submit" />
+</form>
+
+<style>
+  input,
+  form {
+    margin-bottom: 8px;
+  }
+</style>
+
+<h2>Liste des utilisateurs</h2>
 <ul>
-    {% for user in users %}
-        <li>{{ user.nom }}</li>
-    {% else %}
-        <li>Aucun utilisateur trouvé.</li>
-    {% endfor %}
+  {% for user in users %}
+  <li>{{ user.nom }} <a href="/user/remove/{{ user.id }}">x</a></li>
+  {% else %}
+  <li>Aucun utilisateur trouvé.</li>
+  {% endfor %}
 </ul>
 
 {% endblock %}
